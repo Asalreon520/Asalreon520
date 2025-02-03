@@ -1,0 +1,205 @@
+Codigo de Pyton 
+
+import socket
+
+# Crear un socket
+mysock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# Conectar al servidor
+mysock.connect(('data.pr4e.org', 80))
+
+# Enviar la solicitud GET para la nueva URL
+cmd = 'GET /intro-short.txt HTTP/1.0\r\nHost: data.pr4e.org\r\n\r\n'.encode()
+mysock.send(cmd)
+
+# Leer la respuesta
+response = b""
+while True:
+    data = mysock.recv(512)
+    if len(data) < 1:
+        break
+    response += data
+
+# Cerrar el socket
+mysock.close()
+
+# Convertir la respuesta en texto
+response = response.decode()
+
+# Imprimir los encabezados y los datos
+headers, body = response.split("\r\n\r\n", 1)
+
+# Imprimir encabezados
+print("Headers:")
+print(headers)
+
+# Imprimir el cuerpo (contenido de la página)
+print("\nBody:")
+print(body)
+
+# Separar los encabezados y extraer la información necesaria
+header_lines = headers.split("\r\n")
+last_modified = None
+etag = None
+content_length = None
+cache_control = None
+content_type = None
+
+for line in header_lines:
+    if line.lower().startswith("last-modified:"):
+        last_modified = line.split(":")[1].strip()
+    elif line.lower().startswith("etag:"):
+        etag = line.split(":")[1].strip()
+    elif line.lower().startswith("content-length:"):
+        content_length = line.split(":")[1].strip()
+    elif line.lower().startswith("cache-control:"):
+        cache_control = line.split(":")[1].strip()
+    elif line.lower().startswith("content-type:"):
+        content_type = line.split(":")[1].strip()
+
+# Imprimir los valores de los encabezados
+print(f"Last-Modified: {last_modified}")
+print(f"ETag: {etag}")
+print(f"Content-Length: {content_length}")
+print(f"Cache-Control: {cache_control}")
+print(f"Content-Type: {content_type}")
+
+
+#Headers:
+#HTTP/1.1 200 OK
+#Date: Mon, 03 Feb 2025 16:57:08 GMT
+#Server: Apache/2.4.52 (Ubuntu)
+#Last-Modified: Sat, 13 May 2017 11:22:22 GMT
+#ETag: "1d3-54f6609240717"
+#Accept-Ranges: bytes
+#Content-Length: 467
+#Cache-Control: max-age=0, no-cache, no-store, must-revalidate
+#Pragma: no-cache
+#Expires: Wed, 11 Jan 1984 05:00:00 GMT
+#Connection: close
+#Content-Type: text/plain
+
+#Body:
+#Why should you learn to write programs?
+
+#Writing programs (or programming) is a very creative 
+#and rewarding activity.  You can write programs for 
+#many reasons, ranging from making your living to solving
+#a difficult data analysis problem to having fun to helping
+#someone else solve a problem.  This book assumes that 
+#everyone needs to know how to program, and that once 
+#you know how to program you will figure out what you want 
+#to do with your newfound skills.  
+
+#Last-Modified: Sat, 13 May 2017 11
+#ETag: "1d3-54f6609240717"
+#Content-Length: 467
+#Cache-Control: max-age=0, no-cache, no-store, must-revalidate
+#Content-Type: text/plain
+
+Respuestas
+
+Last-Modified: Sat, 13 May 2017 11:22:22 GMT
+ETag: "1d3-54f6609240717"
+Content-Length: 467
+Cache-Control: max-age=0, no-cache, no-store, must-revalidate
+Content-Type: text/plain
+
+Codigo de python 2
+
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+import ssl
+
+# Ignorar errores de certificado SSL
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
+
+# Solicitar la URL al usuario
+url = input('Enter - ')
+html = urlopen(url, context=ctx).read()
+soup = BeautifulSoup(html, "html.parser")
+
+# Encontrar todas las etiquetas <span> con la clase "comments"
+tags = soup.find_all('span', class_='comments')
+
+# Inicializar una variable para la suma
+total = 0
+
+# Iterar sobre todas las etiquetas <span> y sumar sus valores
+for tag in tags:
+    # Asegurarse de que el texto sea un número
+    try:
+        total += int(tag.text)
+    except ValueError:
+        continue  # Si no es un número, ignorar
+
+# Mostrar el número total de etiquetas y la suma
+print('Count', len(tags))
+print('Sum', total)
+
+
+El URL: http://py4e-data.dr-chuck.net/comments_2167010.html  
+Count 50
+Sum 2357
+
+Codigo de Python 3
+
+import urllib.request
+from bs4 import BeautifulSoup
+
+# Función para seguir los enlaces
+def follow_links(url, count, position):
+    for _ in range(count):
+        print(f"Retrieving: {url}")
+        html = urllib.request.urlopen(url).read()
+        soup = BeautifulSoup(html, 'html.parser')
+        
+        # Encontrar todos los enlaces <a> en la página
+        tags = soup.find_all('a')
+        
+        # Obtener el enlace en la posición especificada (position-1, ya que es 1-indexed)
+        url = tags[position - 1].get('href', None)
+    
+    # Retornar el último nombre en la secuencia
+    last_name = url.split('_')[-1].split('.')[0]
+    return last_name
+
+# Entrada del usuario
+url = input("Enter URL: ")
+count = int(input("Enter count: "))
+position = int(input("Enter position: "))
+
+# Obtener el último nombre en la secuencia
+last_name = follow_links(url, count, position)
+
+# Imprimir la respuesta
+print(f"The answer to the assignment for this execution is \"{last_name}\".")
+
+Si se ejecuta con el siguiente input:
+
+Enter URL: http://py4e-data.dr-chuck.net/known_by_Elsa.html
+Enter count: 7
+Enter position: 18
+
+Codigo Python 4
+import re
+import urllib.request
+
+# URL del archivo de datos
+url = 'http://py4e-data.dr-chuck.net/regex_sum_2167008.txt'
+
+# Descargar el archivo
+response = urllib.request.urlopen(url)
+file_data = response.read().decode()
+
+# Encontrar todos los números en el texto
+numbers = re.findall('[0-9]+', file_data)
+
+# Convertir los números a enteros y sumarlos
+total_sum = sum(map(int, numbers))
+
+# Mostrar el resultado
+print('Sum:', total_sum)
+
