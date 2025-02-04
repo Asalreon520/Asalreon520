@@ -203,3 +203,103 @@ total_sum = sum(map(int, numbers))
 # Mostrar el resultado
 print('Sum:', total_sum)
 
+Codigo Python 5
+
+import urllib.request
+import xml.etree.ElementTree as ET
+
+# Pedir la URL
+url = input("Enter location: ")
+
+# Descargar el contenido del XML desde la URL
+print(f"Retrieving {url}")
+xml_data = urllib.request.urlopen(url).read()
+
+# Mostrar la longitud de los datos recibidos
+print(f"Retrieved {len(xml_data)} characters")
+
+# Parsear el XML
+tree = ET.fromstring(xml_data)
+
+# Buscar todos los elementos 'count' en el XML
+counts = tree.findall('.//count')
+
+# Inicializar la variable para la suma
+total = 0
+
+# Contar la cantidad de elementos y sumar sus valores
+for count in counts:
+    total += int(count.text)
+
+# Mostrar el número de comentarios y la suma total
+print(f"Count: {len(counts)}")
+print(f"Sum: {total}")
+
+URL:http://py4e-data.dr-chuck.net/comments_2167012.xml
+
+Codigo Python 6 
+
+import urllib.request
+import json
+
+# Solicitar URL al usuario
+url = input("Enter location: ")
+print("Retrieving", url)
+
+# Leer datos desde la URL
+with urllib.request.urlopen(url) as response:
+    data = response.read().decode()
+
+print("Retrieved", len(data), "characters")
+
+# Convertir JSON en un diccionario de Python
+info = json.loads(data)
+
+# Extraer la lista de comentarios y sumar los valores de 'count'
+counts = [item['count'] for item in info['comments']]
+print("Count:", len(counts))
+print("Sum:", sum(counts))
+
+URL: http://py4e-data.dr-chuck.net/comments_2167013.json
+
+Codigo Python 7
+
+import urllib.request, urllib.parse, urllib.error
+import json
+
+def get_plus_code(location):
+    base_url = "http://py4e-data.dr-chuck.net/opengeo?"
+    params = {"q": location}
+    url = base_url + urllib.parse.urlencode(params)
+    
+    print(f"Retrieving {url}")
+    
+    with urllib.request.urlopen(url) as response:
+        data = response.read().decode()
+    
+    print(f"Retrieved {len(data)} characters")
+    
+    try:
+        json_data = json.loads(data)
+        print(json.dumps(json_data, indent=4))  # Print full JSON response
+    except json.JSONDecodeError:
+        print("Failed to parse JSON")
+        return None
+    
+    # Extraer el plus_code correctamente
+    try:
+        plus_code = json_data["features"][0]["properties"]["plus_code"]
+        return plus_code
+    except (KeyError, IndexError):
+        print("No plus_code found in response")
+        return None
+
+if __name__ == "__main__":
+    location = input("Enter location: ")
+    plus_code = get_plus_code(location)
+    
+    if plus_code:
+        print(f"Plus code {plus_code}")
+
+URL:  University of Stellenbosch
+
