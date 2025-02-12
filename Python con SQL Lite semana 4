@@ -128,4 +128,275 @@ conn.close()
 
 Pregunta 3
 
+To get credit for this assignment, perform the instructions below and upload your SQLite3 database here:
+Sin archivos seleccionados
+(Must have a .sqlite suffix)
+You do not need to export or convert the database - simply upload the .sqlite file that your program creates. See the example code for the use of the connect() statement.
+
+Musical Track Database
+This application will read an iTunes export file in CSV format and produce a properly normalized database with this structure:
+
+CREATE TABLE Artist (
+    id  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    name    TEXT UNIQUE
+);
+
+CREATE TABLE Genre (
+    id  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    name    TEXT UNIQUE
+);
+
+CREATE TABLE Album (
+    id  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    artist_id  INTEGER,
+    title   TEXT UNIQUE
+);
+
+CREATE TABLE Track (
+    id  INTEGER NOT NULL PRIMARY KEY 
+        AUTOINCREMENT UNIQUE,
+    title TEXT  UNIQUE,
+    album_id  INTEGER,
+    genre_id  INTEGER,
+    len INTEGER, rating INTEGER, count INTEGER
+);
+If you run the program multiple times in testing or with different files, make sure to empty out the data before each run.
+
+You can use this code as a starting point for your application: http://www.py4e.com/code3/tracks.zip. The ZIP file contains the tracks.csv file to be used for this assignment. You can export your own tracks from iTunes and create a database, but for the database that you turn in for this assignment, only use the tracks.csv data that is provided. You can adapt the tracks_csv.py application in the zip file to complete the assignment.
+
+To grade this assignment, the program will run a query like this on your uploaded database and look for the data it expects to see:
+
+SELECT Track.title, Artist.name, Album.title, Genre.name 
+    FROM Track JOIN Genre JOIN Album JOIN Artist 
+    ON Track.genre_id = Genre.ID and Track.album_id = Album.id 
+        AND Album.artist_id = Artist.id
+    ORDER BY Artist.name LIMIT 3
+The expected result of the modified query on your database is: (shown here as a simple HTML table with titles)
+Track	Artist	Album	Genre
+Chase the Ace	AC/DC	Who Made Who	Rock
+D.T.	AC/DC	Who Made Who	Rock
+For Those About To Rock (We Salute You)	AC/DC	Who Made Who	Rock
+
+Codigo
+
+import sqlite3
+import csv
+
+# Conectar a la base de datos (se creará si no existe)
+conn = sqlite3.connect('music_tracks.sqlite')
+cur = conn.cursor()
+
+# Crear las tablas si no existen
+cur.execute('''
+CREATE TABLE IF NOT EXISTS Artist (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    name TEXT UNIQUE
+)
+''')
+
+cur.execute('''
+CREATE TABLE IF NOT EXISTS Genre (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    name TEXT UNIQUE
+)
+''')
+
+cur.execute('''
+CREATE TABLE IF NOT EXISTS Album (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    artist_id INTEGER,
+    title TEXT UNIQUE
+)
+''')
+
+cur.execute('''
+CREATE TABLE IF NOT EXISTS Track (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    title TEXT UNIQUE,
+    album_id INTEGER,
+    genre_id INTEGER,
+    len INTEGER, 
+    rating INTEGER, 
+    count INTEGER
+)
+''')
+
+# Vaciar las tablas antes de insertar datos (para pruebas o ejecuciones múltiples)
+cur.execute('DELETE FROM Track')
+cur.execute('DELETE FROM Album')
+cur.execute('DELETE FROM Genre')
+cur.execute('DELETE FROM Artist')
+
+# Leer el archivo CSV y verificar las columnas
+with open('C:/Users/EDDO SU/Downloads/Base de datos/tracks/tracks.csv', 'r', encoding='utf-8') as f:
+    reader = csv.reader(f)
+    
+    # Imprimir la primera fila (títulos de las columnas) para verificar el formato
+    headers = next(reader)
+    print("Nombres de las columnas:", headers)
+
+    for row in reader:
+        # Verifica los datos de cada fila
+        print("Fila:", row)
+
+        # Mapear las columnas a variables, ajustando el índice según el orden correcto en el CSV
+        track_title = row[0]  # Asumiendo que la primera columna es la canción
+        artist_name = row[1]  # Asumiendo que la segunda columna es el artista
+        album_title = row[2]  # Asumiendo que la tercera columna es el álbum
+        genre_name = row[6]   # Asumiendo que la séptima columna es el género
+        track_length = int(row[3])  # Longitud
+        track_rating = int(row[4])  # Rating
+        track_count = int(row[5])   # Play count
+
+        # Insertar artista si no existe
+        cur.execute('INSERT OR IGNORE INTO Artist (name) VALUES (?)', (artist_name,))
+        artist_id = cur.lastrowid
+
+        # Insertar género si no existe
+        cur.execute('INSERT OR IGNORE INTO Genre (name) VALUES (?)', (genre_name,))
+        genre_id = cur.lastrowid
+
+        # Insertar álbum si no existe
+        cur.execute('INSERT OR IGNORE INTO Album (artist_id, title) VALUES (?, ?)', (artist_id, album_title))
+        album_id = cur.lastrowid
+
+        # Insertar pista
+        cur.execute('''
+        INSERT OR REPLACE INTO Track (title, album_id, genre_id, len, rating, count) 
+        VALUES (?, ?, ?, ?, ?, ?)
+        ''', (track_title, album_id, genre_id, track_length, track_rating, track_count))
+
+# Guardar los cambios y cerrar la conexión
+conn.commit()
+conn.close()
+
+print("Base de datos generada exitosamente.")
+
+Codigo 4
+"""
+INSTRUCTIONS
+
+This application will read roster data in JSON format, parse the file, and 
+then produce an SQLite database that contains a User, Course, and Member 
+table and populate the tables from the data file.
+
+You can base your solution on this code: 
+http://www.pythonlearn.com/code/roster.py - this code is incomplete as you
+need to modify the program to store the role column in the Member table to
+complete the assignment.
+
+Each student gets their own file for the assignment. Download this file 
+(https://pr4e.dr-chuck.com/tsugi/mod/sql-intro/roster_data.php?PHPSESSID=ac66d3b8dbd59e2dcfee8c24b15c25b9)
+and save it as roster_data.json. Move the downloaded file into the same 
+folder as your roster.py program.
+
+Once you have made the necessary changes to the program and it has been run 
+successfully reading the above JSON data, run the following SQL command:
+
+SELECT hex(User.name || Course.title || Member.role ) AS X FROM 
+    User JOIN Member JOIN Course 
+    ON User.id = Member.user_id AND Member.course_id = Course.id
+    ORDER BY X
+
+Find the first row in the resulting record set and enter the long string that
+looks like 53656C696E613333. 
+"""
+
+import json
+import sqlite3
+
+#PART 1: Creating the database
+dbname = "roster.sqlite"
+conn = sqlite3.connect(dbname)
+cur = conn.cursor()
+
+cur.executescript('''
+	DROP TABLE IF EXISTS User;
+	DROP TABLE IF EXISTS Course;
+	DROP TABLE IF EXISTS Member;
+
+	CREATE TABLE User (
+		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+		name TEXT UNIQUE 
+	);
+
+	CREATE TABLE Course (
+		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+		title TEXT UNIQUE
+	);
+
+	CREATE TABLE Member (
+		user_id INTEGER,
+		course_id INTEGER,
+		role INTEGER,
+		PRIMARY KEY(user_id, course_id)
+	)
+''')
+#Note: if we don't add UNIQUE after "User.name" and "Course.title", 
+#the IGNORE statement won't work and therefore we'll have duplicates
+
+
+#PART 2: DESERIALIZING THE data
+#The JSON data we're going to process is stored in an array form, with each
+#item being also an array of three elements: one corresponding to the username 
+#one corresponding to the course name, and one indicating if the user is instructor
+#None of them has any field title. 
+
+filename = "roster_data.json"
+jsondata = open(filename)
+data = json.load(jsondata)
+
+#PART 3: INSERTING DATA
+for entry in data:
+	user = entry[0]
+	course = entry[1]
+	instructor = entry[2]
+
+	#Inserting user
+	user_statement = """INSERT OR IGNORE INTO User(name) VALUES( ? )"""
+	SQLparams = (user, )
+	cur.execute(user_statement, SQLparams)
+
+	#Inserting course
+	course_statement = """INSERT OR IGNORE INTO Course(title) VALUES( ? )"""
+	SQLparams = (course, )
+	cur.execute(course_statement, SQLparams)
+
+	#Getting user and course id
+	courseID_statement = """SELECT id FROM Course WHERE title = ?"""
+	SQLparams = (course, )
+	cur.execute(courseID_statement, SQLparams)
+	courseID = cur.fetchone()[0]
+
+	userID_statement = """SELECT id FROM User WHERE name = ?"""
+	SQLparams = (user, )
+	cur.execute(userID_statement, SQLparams)
+	userID = cur.fetchone()[0]
+
+	#Inserting the entry
+	member_statement = """INSERT INTO Member(user_id, course_id, role)
+		VALUES(?, ?, ?)"""
+	SQLparams = (userID, courseID, instructor)
+	cur.execute(member_statement, SQLparams)
+
+#Saving the changes
+conn.commit()
+
+#PART 4: Testing and obtaining the results
+test_statement = """
+SELECT hex(User.name || Course.title || Member.role ) AS X FROM 
+    User JOIN Member JOIN Course 
+    ON User.id = Member.user_id AND Member.course_id = Course.id
+    ORDER BY X
+"""
+cur.execute(test_statement)
+result = cur.fetchone()
+print("RESULT: " + str(result))
+
+#Closing the connection
+cur.close()
+conn.close()
+
+Codigo 5
+
 
