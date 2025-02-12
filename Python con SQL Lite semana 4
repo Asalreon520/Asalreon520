@@ -397,6 +397,3 @@ print("RESULT: " + str(result))
 cur.close()
 conn.close()
 
-Codigo 5
-
-
