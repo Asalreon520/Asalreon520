@@ -1,0 +1,102 @@
+Laboratorio 1
+
+Enumere todos los productos de la base de datos de Northwinds mostrando producttid, productname, cantidad por unidad, unitprice y unitsinstock.
+
+Codigo 1:
+
+Select productid, productname, quantityperunit, unitprice ,unitsinstock
+
+form products
+
+Para todos los empleados de Northwinds, enumere el nombre y el apellido concatenados con un espacio en blanco en medio, y el AÑO en que fueron contratados.
+
+Codigo 2:
+
+SELECT CONCAT(firstname, ' ', lastname) AS "Nombre Completo", 
+       EXTRACT(YEAR FROM hiredate) AS "Año de Contratación"
+FROM employees;
+
+
+
+Para todos los productos de la base de datos de Northwinds, enumere el nombre del producto, el precio unitario, las unidades en stock y el valor total del inventario de ese producto como "Valor total" (SUGERENCIA: valor total = unidades en stock * precio unitario).
+
+Codigo 3:
+
+SELECT productname, unitprice, unitsinstock, 
+       (unitprice * unitsinstock) AS "Valor Total"
+FROM products;
+
+
+Para todos los empleados de Northwinds, liste el nombre y el apellido concatenados con un espacio en blanco en medio con un encabezado de columna "Nombre", y el nombre del mes (deletreado) para el cumpleaños de cada empleado. 
+
+Codigo 4:
+SELECT CONCAT(firstname, ' ', lastname) AS "Nombre", 
+       TO_CHAR(birthdate, 'Month') AS "Mes de Nacimiento"
+FROM employees;
+
+
+
+Laboratorio 2
+
+Practique algunas consultas SELECT utilizando la cláusula WHERE
+
+Enumere el customerid, el companyname y el país para todos los clientes que NO se encuentran en EE.UU.
+
+Codigo 1:
+
+Clientes que NO están en EE.UU.:
+
+sql
+
+SELECT customerid, companyname, country
+FROM customers
+WHERE country <> 'USA';
+
+Para todos los productos de la base de datos Northwinds, enumere el nombre del producto, el precio unitario, las unidades en stock y el valor total del inventario de ese producto como "Valor total" para todos los productos con un Valor total superior a 1.000 $. (SUGERENCIA: valor total = unidades en stock * precio unitario)
+
+Codigo 2
+
+Productos con valor total del inventario superior a $1,000:
+
+SELECT productname, unitprice, unitsinstock, 
+       (unitprice * unitsinstock) AS "Valor total"
+FROM products
+WHERE (unitprice * unitsinstock) > 1000;
+
+
+Enumere el producttid, productname, y quantityperunit para todos los productos que vienen en botellas.
+
+Codigo 3
+
+Productos que vienen en botellas:
+
+SELECT productid, productname, quantityperunit
+FROM products
+WHERE quantityperunit ILIKE '%bottle%';
+
+
+
+Enumere el producttid, productname y unitprice de todos los productos cuyo categoryid sea un número ODD. (SUGERENCIA: categoryid es un número entero de un dígito menor que 9...)
+
+Codigo 4
+
+Productos cuyo categoryid es un número impar:
+
+SELECT productid, productname, unitprice
+FROM products
+WHERE categoryid % 2 = 1 AND categoryid < 9;
+
+
+Enumere el orderid, customerid y shippeddate de los pedidos que se enviaron a Canadá en diciembre de 1996 hasta finales de enero de 1997.
+
+Codigo 5
+
+Pedidos enviados a Canadá entre diciembre de 1996 y enero de 1997:
+
+SELECT orderid, customerid, shippeddate
+FROM orders
+WHERE shippeddate BETWEEN '1996-12-01' AND '1997-01-31'
+  AND shipcountry = 'Canada';
+
+
+
