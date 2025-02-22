@@ -654,3 +654,55 @@ LEFT JOIN Orders O ON S.ShipperID = O.ShipVia
 WHERE O.OrderID IS NULL;
 
 🔹 Se buscan expedidores sin pedidos asignados.
+
+Laboratorio 8
+
+CREATE TABLE items (
+    itemID INTEGER PRIMARY KEY,
+    itemcode VARCHAR(5) NULL,
+    itemname VARCHAR(40) NOT NULL DEFAULT ' ',
+    quantity INTEGER NOT NULL DEFAULT 0,
+    price DECIMAL(9,2) NOT NULL DEFAULT 0
+);
+
+INSERT INTO items (itemid, itemcode, itemname, quantity, price)
+SELECT 
+    productid, 
+    CAST(supplierid AS TEXT) || CAST(categoryid AS TEXT) || CAST(discontinued AS TEXT),
+    productname, 
+    unitsinstock, 
+    unitprice
+FROM products;
+
+1. Comprobar si la tabla items está disponible y tiene datos
+SELECT * FROM items;
+
+Muestra todas las filas y columnas de la tabla items.
+Permite verificar si la tabla existe y contiene datos.
+
+2. Cambiar el nombre de la tabla items a demo
+ALTER TABLE items RENAME TO demo;
+
+Renombra la tabla items a demo.
+Mantiene todos los datos y la estructura de la tabla.
+
+3. Cambiar el nombre de la columna itemcode a itemclass
+ALTER TABLE demo RENAME COLUMN itemcode TO itemclass;
+
+Modifica el nombre de la columna itemcode, cambiándolo por itemclass.
+La estructura y los datos de la columna permanecen intactos.
+
+4. Añadir una nueva columna iteminfo a la tabla demo
+ALTER TABLE demo ADD COLUMN iteminfo VARCHAR(5);
+
+Agrega una nueva columna llamada iteminfo con un tipo de datos VARCHAR(5), lo que significa que puede almacenar hasta 5 caracteres.
+Inicialmente, esta columna estará vacía (NULL en todas las filas).
+
+5. Copiar los valores de itemclass en iteminfo
+UPDATE demo SET iteminfo = itemclass;
+
+6. Verificar los cambios en la tabla demo
+SELECT * FROM demo;
+
+Muestra la tabla demo con todas sus columnas, incluyendo itemclass (antes itemcode) y la nueva iteminfo.
+Permite confirmar que los cambios se aplicaron correctamente.
