@@ -397,3 +397,154 @@ print("RESULT: " + str(result))
 cur.close()
 conn.close()
 
+Laboratorio 3
+Practique algunas consultas SELECT utilizando funciones DATE
+
+Anote el employeeid, firstname + lastname concatenados como 'empleado', y la edad del empleado cuando fue contratado.
+
+Ejecute una consulta para calcular su edad a fecha de hoy.
+
+Enumere el employeeid, nombre + apellido concatenados como 'empleado', y la fecha de contratación para todos los empleados contratados en 1993
+
+Consulta 1: Edad del empleado cuando fue contratado
+
+SELECT employeeid, 
+       firstname || ' ' || lastname AS empleado, 
+       EXTRACT(YEAR FROM hiredate) - EXTRACT(YEAR FROM birthdate) AS edad_al_contratar
+FROM employees;
+
+Explicación:
+
+EXTRACT(YEAR FROM hiredate) obtiene el año de contratación.
+EXTRACT(YEAR FROM birthdate) obtiene el año de nacimiento.
+La resta de estos valores calcula la edad al momento de ser contratado.
+
+Consulta 2: Edad actual del empleado
+
+SELECT employeeid, 
+       firstname || ' ' || lastname AS empleado, 
+       EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM birthdate) AS edad_actual
+FROM employees;
+
+Explicación:
+
+EXTRACT(YEAR FROM CURRENT_DATE) obtiene el año actual.
+Se resta el año de nacimiento para calcular la edad actual.
+
+Consulta 3: Empleados contratados en 1993
+
+SELECT employeeid, 
+       firstname || ' ' || lastname AS empleado, 
+       hiredate
+FROM employees
+WHERE EXTRACT(YEAR FROM hiredate) = 1993;
+
+Explicación:
+
+EXTRACT(YEAR FROM hiredate) = 1993 filtra solo a los empleados contratados en ese año.
+
+Semana 3 
+
+Laboratorio 4
+
+Practique algunas consultas SELECT utilizando funciones GROUP y GROUP BY
+
+Enumere el total (precio unitario * cantidad) como "Valor total" por orderid para los 5 pedidos principales (es decir, los cinco pedidos con el Valor total más alto).
+
+¿Cuántos productos tiene Northwinds en inventario?
+
+¿Cuántos productos están agotados?
+
+¿De qué proveedor o proveedores tiene Northwinds menos productos?
+
+¿Qué empleados de Northwinds (muestre sólo su employeeid) tuvieron más de 100 pedidos?
+
+
+1️⃣ Total (precio unitario * cantidad) por OrderID para los 5 pedidos principales
+
+SELECT OrderID, SUM(UnitPrice * Quantity) AS "Valor total"
+FROM OrderDetails
+GROUP BY OrderID
+ORDER BY "Valor total" DESC
+LIMIT 5;
+
+Explicación: Calcula el total de cada pedido y selecciona los 5 con el valor más alto.
+
+2️⃣ Cantidad total de productos en inventario
+
+SELECT SUM(UnitsInStock) AS "Total en Inventario"
+FROM Products;
+
+Explicación: Suma todas las unidades disponibles en stock.
+
+3️⃣ Cantidad de productos agotados
+
+SELECT COUNT(*) AS "Productos Agotados"
+FROM Products
+WHERE UnitsInStock = 0;
+
+Explicación: Cuenta cuántos productos tienen UnitsInStock = 0.
+
+4️⃣ Proveedor con menos productos
+
+SELECT SupplierID, COUNT(ProductID) AS "Cantidad de Productos"
+FROM Products
+GROUP BY SupplierID
+ORDER BY "Cantidad de Productos" ASC
+LIMIT 1;
+
+Explicación: Agrupa los productos por SupplierID, cuenta cuántos tiene cada proveedor y selecciona el que tenga menos.
+
+5️⃣ Empleados con más de 100 pedidos
+
+Laboratorio 5
+
+Practique algunas consultas SELECT utilizando subconsultas
+
+Enumere el producttid, productname, unitprice del producto de menor precio que vende Northwinds.
+
+Cuántos pedidos de la tabla de pedidos tienen un customerID incorrecto (falta o no está archivado en la tabla de clientes.)
+
+Utilice una subconsulta en un SELECT para obtener una lista interesante.
+
+Utilice una subconsulta en un FROM para listar algo interesante.
+
+1. Producto de menor precio que vende Northwind
+
+SELECT ProductID, ProductName, UnitPrice 
+FROM Products 
+WHERE UnitPrice = (SELECT MIN(UnitPrice) FROM Products);
+
+Esta consulta obtiene el ProductID, ProductName y UnitPrice del producto con el precio más bajo.
+
+2. Cantidad de pedidos con un CustomerID incorrecto
+
+SELECT COUNT(*) AS InvalidOrders
+FROM Orders 
+WHERE CustomerID NOT IN (SELECT CustomerID FROM Customers);
+
+Esta consulta cuenta cuántos pedidos tienen un CustomerID que no existe en la tabla Customers.
+
+3. Subconsulta en SELECT (Total de ventas por pedido)
+
+SELECT OrderID, 
+       (SELECT SUM(UnitPrice * Quantity) 
+        FROM OrderDetails 
+        WHERE OrderDetails.OrderID = Orders.OrderID) AS TotalSales
+FROM Orders
+ORDER BY TotalSales DESC;
+
+Aquí, la subconsulta calcula el total de ventas (UnitPrice * Quantity) por cada OrderID.
+
+4. Subconsulta en FROM (Pedidos con su total de ventas)
+
+SELECT OrderID, TotalSales
+FROM (
+    SELECT OrderID, SUM(UnitPrice * Quantity) AS TotalSales
+    FROM OrderDetails
+    GROUP BY OrderID
+) AS OrderTotals
+ORDER BY TotalSales DESC;
+
+En este caso, la subconsulta (OrderTotals) dentro de FROM agrupa y calcula el total de ventas por pedido antes de que la consulta principal lo seleccione y ordene.
+
