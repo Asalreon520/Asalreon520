@@ -548,3 +548,109 @@ ORDER BY TotalSales DESC;
 
 En este caso, la subconsulta (OrderTotals) dentro de FROM agrupa y calcula el total de ventas por pedido antes de que la consulta principal lo seleccione y ordene.
 
+Laboratorio 6 
+
+Practique algunas consultas SELECT utilizando uniones internas
+
+Enumere cada pedido y su Valor Total (precio unitario * cantidad) para todos los pedidos que se envían a Francia en orden descendente de Valor Total.
+
+Cree una lista de proveedores que muestre el nombre de la empresa del proveedor y los nombres de todos los productos vendidos por cada proveedor ubicado en Japón.
+
+Cree una lista de "Empleados con bajo rendimiento" que muestre los empleados que tienen menos de 100.000 dólares en ventas totales. Enumere el Apellido y Nombre del empleado seguido de su volumen total de ventas (el valor total en dólares de sus pedidos.)
+
+1️⃣ Pedidos y su Valor Total enviados a Francia
+
+SELECT o.OrderID, 
+       SUM(od.UnitPrice * od.Quantity) AS ValorTotal
+FROM Orders o
+INNER JOIN OrderDetails od ON o.OrderID = od.OrderID
+WHERE o.ShipCountry = 'France'
+GROUP BY o.OrderID
+ORDER BY ValorTotal DESC;
+
+🔹 Explicación:
+
+Se usa INNER JOIN para unir Orders y OrderDetails por OrderID.
+Se filtran los pedidos enviados a Francia (ShipCountry = 'France').
+Se calcula el valor total del pedido multiplicando UnitPrice * Quantity y sumándolo por OrderID.
+Se ordena en descendente (DESC) para que los pedidos con mayor valor aparezcan primero.
+
+2️⃣ Lista de proveedores y productos vendidos por cada proveedor en Japón
+
+SELECT s.CompanyName AS Proveedor, p.ProductName AS Producto
+FROM Suppliers s
+INNER JOIN Products p ON s.SupplierID = p.SupplierID
+WHERE s.Country = 'Japan'
+ORDER BY s.CompanyName, p.ProductName;
+
+🔹 Explicación:
+
+Se usa INNER JOIN entre Suppliers y Products para relacionar productos con sus proveedores.
+Se filtran los proveedores que están en Japón (Country = 'Japan').
+Se ordena primero por el nombre del proveedor y luego por el nombre del producto.
+
+3️⃣ Empleados con bajo rendimiento (< 100,000 en ventas)
+
+SELECT e.LastName, e.FirstName, 
+       SUM(od.UnitPrice * od.Quantity) AS VentasTotales
+FROM Employees e
+INNER JOIN Orders o ON e.EmployeeID = o.EmployeeID
+INNER JOIN OrderDetails od ON o.OrderID = od.OrderID
+GROUP BY e.LastName, e.FirstName
+HAVING SUM(od.UnitPrice * od.Quantity) < 100000
+ORDER BY VentasTotales ASC;
+
+🔹 Explicación:
+
+Se usa INNER JOIN entre Employees, Orders y OrderDetails para calcular las ventas totales de cada empleado.
+Se agrupan los datos por Apellido y Nombre del empleado.
+Se usa HAVING para filtrar los empleados con ventas totales menores a $100,000.
+Se ordena en ascendente (ASC) para que los de menor rendimiento aparezcan primero.
+
+Laboratorio 7 
+
+Practique algunas consultas SELECT utilizando uniones externas
+
+¿Hay algún empleado de Northwinds que no tenga pedidos?
+
+¿Hay algún cliente de Northwinds que no tenga pedidos?
+
+¿Hay algún pedido de Northwinds que tenga números de cliente erróneos (no archivados)?
+
+¿Hay algún expedidor que no haya enviado ningún pedido de Northwinds?
+
+1. ¿Hay algún empleado que no tenga pedidos?
+
+SELECT E.EmployeeID, E.LastName, E.FirstName 
+FROM Employees E
+LEFT JOIN Orders O ON E.EmployeeID = O.EmployeeID
+WHERE O.OrderID IS NULL;
+
+🔹 Se usa LEFT JOIN para traer a todos los empleados y filtrar aquellos sin pedidos.
+
+2. ¿Hay algún cliente que no tenga pedidos?
+
+SELECT C.CustomerID, C.CompanyName 
+FROM Customers C
+LEFT JOIN Orders O ON C.CustomerID = O.CustomerID
+WHERE O.OrderID IS NULL;
+
+🔹 Se listan los clientes sin pedidos.
+
+3. ¿Hay algún pedido con un número de cliente erróneo (no archivado)?
+
+SELECT O.OrderID, O.CustomerID 
+FROM Orders O
+LEFT JOIN Customers C ON O.CustomerID = C.CustomerID
+WHERE C.CustomerID IS NULL;
+
+🔹 Se usa LEFT JOIN para identificar pedidos con CustomerID inexistente.
+
+4. ¿Hay algún expedidor que no haya enviado pedidos?
+
+SELECT S.ShipperID, S.CompanyName 
+FROM Shippers S
+LEFT JOIN Orders O ON S.ShipperID = O.ShipVia
+WHERE O.OrderID IS NULL;
+
+🔹 Se buscan expedidores sin pedidos asignados.
