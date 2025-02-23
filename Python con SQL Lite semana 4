@@ -682,7 +682,7 @@ Permite verificar si la tabla existe y contiene datos.
 
 2. Cambiar el nombre de la tabla items a demo
 ALTER TABLE items RENAME TO demo;
-
+Cambiar e Verifica
 Renombra la tabla items a demo.
 Mantiene todos los datos y la estructura de la tabla.
 
@@ -701,8 +701,26 @@ Inicialmente, esta columna estará vacía (NULL en todas las filas).
 5. Copiar los valores de itemclass en iteminfo
 UPDATE demo SET iteminfo = itemclass;
 
-6. Verificar los cambios en la tabla demo
+6.Insertar datos en la tabla "demo" usando el formato 1 de INSERT
+INSERT INTO demo VALUES (101, '1234', 'Spicy Grillmate', 12, 1.99, '1234');
+
+7) Insertar datos en la tabla "demo" usando el formato 2 de INSERT
+INSERT INTO demo VALUES (102, '6789', 'GlobalWarmer', 24, 42.99, '6789');
+
+8) Actualizar la columna iteminfo a '0000' si itemid es mayor que 100
+UPDATE demo
+SET iteminfo = '0000'
+WHERE itemid > 100;
+
+9) Eliminar las filas recién insertadas
+DELETE FROM demo WHERE itemid IN (101, 102);
+
+10)Eliminar la tabla "demo" completamente
+DROP TABLE demo;
+
+11. Verificar los cambios en la tabla demo
 SELECT * FROM demo;
 
 Muestra la tabla demo con todas sus columnas, incluyendo itemclass (antes itemcode) y la nueva iteminfo.
 Permite confirmar que los cambios se aplicaron correctamente.
+
