@@ -1,0 +1,51 @@
+Conectarse al entorno de laboratorio SQL de Coursera
+
+NOTA: Si no está seguro de cómo conectarse al entorno de laboratorio SQL de Coursera, consulte las instrucciones del Laboratorio 1.
+
+Cree una vista "TopCustomers" utilizando la siguiente sentencia SELECT para poblar la vista.
+
+
+SELECT companyname, sum(unitprice * quantity) as "Total Sales"
+fromcustomers CJOIN
+    orders O ONC.customerid  =  O.customerid JOIN
+          orderdetails D ON O.orderid  =  D.orderid
+GROUP BY companyname 
+Order By 2 desc LIMIT5;
+
+Ejecute una consulta contra su vista para asegurarse de que funciona
+
+CREATE VIEW TopCustomers AS
+SELECT companyname, SUM(unitprice * quantity) AS "Total Sales"
+FROM customers C
+JOIN orders O ON C.customerid = O.customerid
+JOIN orderdetails D ON O.orderid = D.orderid
+GROUP BY companyname
+ORDER BY 2 DESC
+LIMIT 5;
+
+Eliminar la Vista si Existe
+
+DROP VIEW IF EXISTS TopCustomers;
+
+Crear la Vista con la Expresión CASE
+
+CREATE VIEW TopCustomers AS
+SELECT companyname, 
+       SUM(unitprice * quantity) AS "Total Sales",
+       CASE 
+           WHEN SUM(unitprice * quantity) < 60000 THEN 'Enfoque en las necesidades'
+           WHEN SUM(unitprice * quantity) >= 60000 AND SUM(unitprice * quantity) < 115000 THEN 'Promedio'
+           ELSE 'Sobresaliente'
+       END AS "Evaluación"
+FROM customers C
+JOIN orders O ON C.customerid = O.customerid
+JOIN orderdetails D ON O.orderid = D.orderid
+GROUP BY companyname
+ORDER BY 2 DESC
+LIMIT 5;
+
+Verificar la Vista
+
+SELECT * FROM TopCustomers;
+
+
