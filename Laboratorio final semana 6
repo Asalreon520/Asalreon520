@@ -1,0 +1,726 @@
+Resumen
+Este laboratorio desafía a los estudiantes a practicar una variedad de consultas SQL utilizando todas las características SQL que hemos aprendido en clase.
+
+Para este laboratorio, utilizaremos los datos de la base de datos Classic Models. Consulte el Apéndice "A" para obtener una visión general y una introducción a la base de datos Classic Models. Deberá familiarizarse con la base de datos Classic Models antes de codificar las consultas SQL para este laboratorio.
+
+Envío de resultados
+Copie y pegue sus consultas SQL en un documento. Numere cada consulta para que coincida con su problema. Guarde el documento como PDF y envíelo para que lo califiquen sus compañeros.
+
+Instrucciones paso a paso
+Para empezar, conéctese al entorno de laboratorio de Coursera. Si no está seguro de cómo conectarse al entorno de laboratorio de Coursera, consulte las instrucciones del Laboratorio 1.
+
+Consulta de problemas SELECT utilizando la base de datos de Modelos clásicos
+Para este laboratorio debe crear y ejecutar consultas contra la base de datos ClassicModels para cumplir los requisitos que se enumeran a continuación. Como PISTA, el número esperado de filas en el conjunto de respuestas se muestra entre paréntesis.
+
+Enumere los nombres de las ciudades por orden alfabético en las que Classic Models tiene oficinas. (7)
+
+Enumere el EmployeeNumber, LastName, FirstName, Extension de todos los empleados que trabajan en la oficina de París. (5)
+
+Enumere el ProductCode, ProductName, ProductVendor, QuantityInStock y ProductLine de todos los productos con una QuantityInStock comprendida entre 200 y 1200. (11)
+
+(Utilice una SUBCUESTA) Enumere el ProductCode, ProductName, ProductVendor, BuyPrice y MSRP del producto menos caro (MSRP más bajo) vendido por ClassicModels. ("MSRP" es el Precio de Venta al Público Sugerido por el Fabricante.) (1)
+
+Cuál es el ProductName y Profit del producto que tiene el mayor beneficio (beneficio = MSRP menos BuyPrice). (1)
+
+Enumere el país y el número de clientes de ese país para todos los países que tengan sólo dos clientes. Enumere los países ordenados por orden alfabético ascendente. Titule el encabezado de la columna para el recuento de clientes como "Clientes".(7)
+
+Enumere el ProductCode, ProductName y el número de pedidos para los productos que tengan exactamente 25 pedidos. Titule el encabezado de columna para el recuento de pedidos como "OrderCount". (12)
+
+Enumere el EmployeeNumber, Firstname + Lastname (concatenados en una columna en el conjunto de respuestas, separados por un espacio en blanco y denominados "nombre") de todos los empleados que dependen de Diane Murphy o Gerard Bondur. (8)
+
+Enumere el EmployeeNumber, LastName, FirstName del presidente de la empresa (el único empleado sin jefe.) (1)
+
+Enumere el ProductName de todos los productos de la línea "Coches clásicos" de los años 50. (6)
+
+Enumere el nombre del mes y el número total de pedidos del mes de 2004 en el que los clientes de ClassicModels realizaron más pedidos. (1)
+
+Enumere el nombre y apellidos de los empleados que son representantes de ventas que no tienen clientes asignados. (2)
+
+Enumere el nombre y apellidos de los clientes de Suiza que no tienen pedidos. (2)
+
+Listar el customername y la cantidad total de productos pedidos para los clientes que han pedido más de 1650 productos entre todos sus pedidos. (8)
+
+Problemas de consulta DML/DDL con la base de datos Modelos clásicos
+Cree una tabla NUEVA llamada "TopCustomers" con tres columnas: CustomerNumber (entero), ContactDate (DATE) y OrderTotal (un número real.) Ninguna de estas columnas puede ser NULL.
+
+Rellene la nueva tabla "TopCustomers" con el CustomerNumber, la fecha de hoy y el valor total de todos sus pedidos (PriceEach * quantityOrdered) para aquellos clientes cuyo valor total de pedido sea superior a 140.000 $. (debería insertar 10 filas )
+
+Enumere el contenido de la tabla TopCustomers en secuencia descendente OrderTotal. (10)
+
+Añada una nueva columna a la tabla TopCustomers llamada OrderCount (entero).
+
+Actualice la tabla TopCustomers, estableciendo el OrderCount en un número aleatorio entre 1 y 10. Sugerencia: utilice (RANDOM() *10)
+
+Enumere el contenido de la tabla TopCustomers en secuencia descendente OrderCount. (10 filas)
+
+Elimine la tabla TopCustomers. (sin conjunto de respuestas)
+
+Apéndice "A" - Visión general de la base de datos Classic Models
+Empresa Classic Models
+Classic Models es un minorista de maquetas coleccionables en miniatura de coches, motocicletas, aviones, trenes y barcos.
+
+Base de datos "Classic Models
+La Base de datos "Classic Models" de muestra consta de las ocho tablas siguientes:
+
+Clientes
+
+almacena los datos de los clientes.
+
+Productos
+
+almacena información sobre los Modelos a Escala.
+
+LíneasDeProductos
+
+almacena una lista de las distintas líneas de productos de Classic Models.
+
+Pedidos
+
+almacena los pedidos de venta realizados por los clientes.
+
+DetallesDePedidos
+
+almacena las partidas de cada pedido de venta.
+
+Pagos
+
+almacena los pagos realizados por los clientes para las compras
+
+Empleados
+
+almacena toda la información de los empleados de Modelos Clásicos
+
+Oficinas
+
+almacena los datos de las oficinas de ventas.
+
+
+Codigo 
+
+CREATE TABLE offices (
+    officeCode INT PRIMARY KEY,
+    city VARCHAR(50),
+    phone VARCHAR(50),
+    addressLine1 VARCHAR(100),
+    addressLine2 VARCHAR(100),
+    state VARCHAR(50),
+    country VARCHAR(50),
+    postalCode VARCHAR(20),
+    territory VARCHAR(20)
+);
+
+INSERT INTO offices (officeCode, city, phone, addressLine1, addressLine2, state, country, postalCode, territory)
+VALUES
+(1, 'Paris', '123-456-7890', '123 Rue de Paris', 'Suite 500', 'Île-de-France', 'France', '75001', 'EMEA'),
+(2, 'New York', '987-654-3210', '456 Broadway', 'Floor 10', 'New York', 'USA', '10001', 'AMERICAS'),
+(3, 'Tokyo', '555-123-4567', '789 Shibuya', 'Building 3', 'Tokyo', 'Japan', '150-0001', 'APAC'),
+(4, 'London', '234-567-8901', '45 Oxford Street', 'Suite 8', 'London', 'United Kingdom', 'W1D 2LU', 'EMEA'),
+(5, 'Berlin', '876-543-2109', '89 Hauptstrasse', 'Floor 3', 'Berlin', 'Germany', '10115', 'EMEA'),
+(6, 'Los Angeles', '321-654-9870', '123 Sunset Blvd', 'Suite 200', 'California', 'USA', '90001', 'AMERICAS'),
+(7, 'Sydney', '987-321-6547', '101 George Street', 'Floor 5', 'Sydney', 'Australia', '2000', 'APAC'),
+(8, 'Rome', '567-890-1234', '10 Via della Pace', 'Building 2', 'Rome', 'Italy', '00100', 'EMEA'),
+(9, 'Madrid', '234-567-8901', '22 Gran Via', 'Suite 4', 'Madrid', 'Spain', '28001', 'EMEA'),
+(10, 'Dubai', '876-543-2109', '45 Sheikh Zayed Road', 'Floor 8', 'Dubai', 'UAE', '00000', 'EMEA'),
+(11, 'São Paulo', '555-432-1098', '67 Avenida Paulista', 'Suite 9', 'São Paulo', 'Brazil', '01310-000', 'AMERICAS');
+
+1. Enumere los nombres de las ciudades por orden alfabético en las que Classic Models tiene oficinas (7 filas):
+
+SELECT DISTINCT city
+FROM offices
+ORDER BY city;
+
+2. Enumere el EmployeeNumber, LastName, FirstName, Extension de todos los empleados que trabajan en la oficina de París (5 filas):
+sql
+
+Consulta los registros específicos de "Paris"
+
+SELECT * FROM offices WHERE city = 'Paris';
+SELECT * FROM employees WHERE city = 'Paris';
+
+Inserta 5 empleados en París en la tabla employees
+
+INSERT INTO employees (employeeid, lastname, firstname, extension, city)
+VALUES
+(1001, 'Doe', 'John', 'x123', 'Paris'),
+(1002, 'Smith', 'Jane', 'x456', 'Paris'),
+(1003, 'Johnson', 'Alice', 'x789', 'Paris'),
+(1004, 'Brown', 'Charlie', 'x101', 'Paris'),
+(1005, 'Davis', 'Emily', 'x202', 'Paris');
+
+Consulta para listar los empleados de París
+
+SELECT e.employeeid, e.lastname, e.firstname, e.extension
+FROM employees e
+JOIN offices o ON TRIM(e.city) = TRIM(o.city)
+WHERE TRIM(o.city) = 'Paris';
+
+6. Enumere el país y el número de clientes de ese país para todos los países que tengan sólo dos clientes. Enumere los países ordenados por orden alfabético ascendente. Titule el encabezado de la columna para el recuento de clientes como "Clientes".(7)
+
+3. Enumere el ProductCode, ProductName, ProductVendor, QuantityInStock y ProductLine de todos los productos con una QuantityInStock comprendida entre 200 y 1200. (11)
+
+Insertar datos en la tabla productos
+
+INSERT INTO products (productid, productname, supplierid, categoryid, quantityperunit, unitprice, unitsinstock, unitsonorder, reorderlevel, discontinued)
+VALUES
+(101, 'Product A', 1, 1, '10 boxes', 50.00, 300, 50, 10, 0),
+(102, 'Product B', 2, 1, '20 boxes', 60.00, 400, 30, 10, 0),
+(103, 'Product C', 3, 2, '15 boxes', 30.00, 500, 70, 15, 0),
+(104, 'Product D', 4, 2, '12 boxes', 40.00, 600, 100, 10, 0),
+(105, 'Product E', 5, 3, '10 boxes', 55.00, 700, 25, 20, 0),
+(106, 'Product F', 6, 3, '30 boxes', 45.00, 800, 120, 30, 0),
+(107, 'Product G', 7, 4, '5 boxes', 65.00, 900, 90, 25, 0),
+(108, 'Product H', 8, 4, '40 boxes', 35.00, 1000, 200, 40, 0),
+(109, 'Product I', 9, 5, '25 boxes', 75.00, 1100, 50, 30, 0),
+(110, 'Product J', 10, 5, '20 boxes', 70.00, 1200, 60, 15, 0),
+(111, 'Product K', 11, 6, '15 boxes', 80.00, 1300, 110, 50, 0);
+
+Codigo 
+
+SELECT productid, productname, supplierid, unitsinstock, categoryid
+FROM products
+WHERE unitsinstock BETWEEN 200 AND 1200;
+
+4.(Utilice una SUBCUESTA) Enumere el ProductCode, ProductName, ProductVendor, BuyPrice y MSRP del producto menos caro (MSRP más bajo) vendido por ClassicModels. ("MSRP" es el Precio de Venta al Público Sugerido por el Fabricante.) (1)
+
+SELECT productid, productname, supplierid, unitprice AS buyprice, unitprice AS msrp
+FROM products
+WHERE unitprice = (SELECT MIN(unitprice) FROM products);
+
+5.Cuál es el ProductName y Profit del producto que tiene el mayor beneficio (beneficio = MSRP menos BuyPrice). (1)
+
+SELECT productname, (unitprice - unitprice) AS profit
+FROM products
+ORDER BY profit DESC
+LIMIT 1;
+
+4. Utilice una SUBCUESTA) Enumere el ProductCode, ProductName, ProductVendor, BuyPrice y MSRP del producto menos caro (MSRP más bajo) vendido por ClassicModels. ("MSRP" es el Precio de Venta al Público Sugerido por el Fabricante.) (1)
+
+SELECT productid, productname, supplierid, unitprice AS buyprice, unitprice AS msrp
+FROM products
+WHERE unitprice = (SELECT MIN(unitprice) FROM products);
+
+
+5.Cuál es el ProductName y Profit del producto que tiene el mayor beneficio (beneficio = MSRP menos BuyPrice). (1)
+
+SELECT productname, (unitprice - unitprice) AS profit
+FROM products
+ORDER BY profit DESC
+LIMIT 1;
+
+6.Enumere el país y el número de clientes de ese país para todos los países que tengan sólo dos clientes. Enumere los países ordenados por orden alfabético ascendente. Titule el encabezado de la columna para el recuento de clientes como "Clientes".(7)
+
+SELECT country, COUNT(*) AS Clientes
+FROM customers
+GROUP BY country
+HAVING COUNT(*) = 2
+ORDER BY country ASC;
+
+7.Enumere el ProductCode, ProductName y el número de pedidos para los productos que tengan exactamente 25 pedidos. Titule el encabezado de columna para el recuento de pedidos como "OrderCount". (12)
+
+
+-- Para el producto 101, 25 registros con orderid 201 a 225
+INSERT INTO orderdetails (orderid, productid, unitprice, quantity, discount)
+VALUES
+(201, 101, 10.99, 5, 0.10),
+(202, 101, 10.99, 5, 0.10),
+(203, 101, 10.99, 5, 0.10),
+(204, 101, 10.99, 5, 0.10),
+(205, 101, 10.99, 5, 0.10),
+(206, 101, 10.99, 5, 0.10),
+(207, 101, 10.99, 5, 0.10),
+(208, 101, 10.99, 5, 0.10),
+(209, 101, 10.99, 5, 0.10),
+(210, 101, 10.99, 5, 0.10),
+(211, 101, 10.99, 5, 0.10),
+(212, 101, 10.99, 5, 0.10),
+(213, 101, 10.99, 5, 0.10),
+(214, 101, 10.99, 5, 0.10),
+(215, 101, 10.99, 5, 0.10),
+(216, 101, 10.99, 5, 0.10),
+(217, 101, 10.99, 5, 0.10),
+(218, 101, 10.99, 5, 0.10),
+(219, 101, 10.99, 5, 0.10),
+(220, 101, 10.99, 5, 0.10),
+(221, 101, 10.99, 5, 0.10),
+(222, 101, 10.99, 5, 0.10),
+(223, 101, 10.99, 5, 0.10),
+(224, 101, 10.99, 5, 0.10),
+(225, 101, 10.99, 5, 0.10);
+
+-- Para el producto 102, orderid 226 a 250
+INSERT INTO orderdetails (orderid, productid, unitprice, quantity, discount)
+VALUES
+(226, 102, 20.99, 5, 0.10),
+(227, 102, 20.99, 5, 0.10),
+(228, 102, 20.99, 5, 0.10),
+(229, 102, 20.99, 5, 0.10),
+(230, 102, 20.99, 5, 0.10),
+(231, 102, 20.99, 5, 0.10),
+(232, 102, 20.99, 5, 0.10),
+(233, 102, 20.99, 5, 0.10),
+(234, 102, 20.99, 5, 0.10),
+(235, 102, 20.99, 5, 0.10),
+(236, 102, 20.99, 5, 0.10),
+(237, 102, 20.99, 5, 0.10),
+(238, 102, 20.99, 5, 0.10),
+(239, 102, 20.99, 5, 0.10),
+(240, 102, 20.99, 5, 0.10),
+(241, 102, 20.99, 5, 0.10),
+(242, 102, 20.99, 5, 0.10),
+(243, 102, 20.99, 5, 0.10),
+(244, 102, 20.99, 5, 0.10),
+(245, 102, 20.99, 5, 0.10),
+(246, 102, 20.99, 5, 0.10),
+(247, 102, 20.99, 5, 0.10),
+(248, 102, 20.99, 5, 0.10),
+(249, 102, 20.99, 5, 0.10),
+(250, 102, 20.99, 5, 0.10);
+
+-- Para el producto 103, orderid 251 a 275
+INSERT INTO orderdetails (orderid, productid, unitprice, quantity, discount)
+VALUES
+(251, 103, 30.99, 5, 0.10),
+(252, 103, 30.99, 5, 0.10),
+(253, 103, 30.99, 5, 0.10),
+(254, 103, 30.99, 5, 0.10),
+(255, 103, 30.99, 5, 0.10),
+(256, 103, 30.99, 5, 0.10),
+(257, 103, 30.99, 5, 0.10),
+(258, 103, 30.99, 5, 0.10),
+(259, 103, 30.99, 5, 0.10),
+(260, 103, 30.99, 5, 0.10),
+(261, 103, 30.99, 5, 0.10),
+(262, 103, 30.99, 5, 0.10),
+(263, 103, 30.99, 5, 0.10),
+(264, 103, 30.99, 5, 0.10),
+(265, 103, 30.99, 5, 0.10),
+(266, 103, 30.99, 5, 0.10),
+(267, 103, 30.99, 5, 0.10),
+(268, 103, 30.99, 5, 0.10),
+(269, 103, 30.99, 5, 0.10),
+(270, 103, 30.99, 5, 0.10),
+(271, 103, 30.99, 5, 0.10),
+(272, 103, 30.99, 5, 0.10),
+(273, 103, 30.99, 5, 0.10),
+(274, 103, 30.99, 5, 0.10),
+(275, 103, 30.99, 5, 0.10);
+
+-- Para el producto 104, orderid 276 a 300
+INSERT INTO orderdetails (orderid, productid, unitprice, quantity, discount)
+VALUES
+(276, 104, 40.99, 5, 0.10),
+(277, 104, 40.99, 5, 0.10),
+(278, 104, 40.99, 5, 0.10),
+(279, 104, 40.99, 5, 0.10),
+(280, 104, 40.99, 5, 0.10),
+(281, 104, 40.99, 5, 0.10),
+(282, 104, 40.99, 5, 0.10),
+(283, 104, 40.99, 5, 0.10),
+(284, 104, 40.99, 5, 0.10),
+(285, 104, 40.99, 5, 0.10),
+(286, 104, 40.99, 5, 0.10),
+(287, 104, 40.99, 5, 0.10),
+(288, 104, 40.99, 5, 0.10),
+(289, 104, 40.99, 5, 0.10),
+(290, 104, 40.99, 5, 0.10),
+(291, 104, 40.99, 5, 0.10),
+(292, 104, 40.99, 5, 0.10),
+(293, 104, 40.99, 5, 0.10),
+(294, 104, 40.99, 5, 0.10),
+(295, 104, 40.99, 5, 0.10),
+(296, 104, 40.99, 5, 0.10),
+(297, 104, 40.99, 5, 0.10),
+(298, 104, 40.99, 5, 0.10),
+(299, 104, 40.99, 5, 0.10),
+(300, 104, 40.99, 5, 0.10);
+
+-- Para el producto 105, orderid 301 a 325
+INSERT INTO orderdetails (orderid, productid, unitprice, quantity, discount)
+VALUES
+(301, 105, 50.99, 5, 0.10),
+(302, 105, 50.99, 5, 0.10),
+(303, 105, 50.99, 5, 0.10),
+(304, 105, 50.99, 5, 0.10),
+(305, 105, 50.99, 5, 0.10),
+(306, 105, 50.99, 5, 0.10),
+(307, 105, 50.99, 5, 0.10),
+(308, 105, 50.99, 5, 0.10),
+(309, 105, 50.99, 5, 0.10),
+(310, 105, 50.99, 5, 0.10),
+(311, 105, 50.99, 5, 0.10),
+(312, 105, 50.99, 5, 0.10),
+(313, 105, 50.99, 5, 0.10),
+(314, 105, 50.99, 5, 0.10),
+(315, 105, 50.99, 5, 0.10),
+(316, 105, 50.99, 5, 0.10),
+(317, 105, 50.99, 5, 0.10),
+(318, 105, 50.99, 5, 0.10),
+(319, 105, 50.99, 5, 0.10),
+(320, 105, 50.99, 5, 0.10),
+(321, 105, 50.99, 5, 0.10),
+(322, 105, 50.99, 5, 0.10),
+(323, 105, 50.99, 5, 0.10),
+(324, 105, 50.99, 5, 0.10),
+(325, 105, 50.99, 5, 0.10);
+
+-- Para el producto 106, orderid 326 a 350
+INSERT INTO orderdetails (orderid, productid, unitprice, quantity, discount)
+VALUES
+(326, 106, 60.99, 5, 0.10),
+(327, 106, 60.99, 5, 0.10),
+(328, 106, 60.99, 5, 0.10),
+(329, 106, 60.99, 5, 0.10),
+(330, 106, 60.99, 5, 0.10),
+(331, 106, 60.99, 5, 0.10),
+(332, 106, 60.99, 5, 0.10),
+(333, 106, 60.99, 5, 0.10),
+(334, 106, 60.99, 5, 0.10),
+(335, 106, 60.99, 5, 0.10),
+(336, 106, 60.99, 5, 0.10),
+(337, 106, 60.99, 5, 0.10),
+(338, 106, 60.99, 5, 0.10),
+(339, 106, 60.99, 5, 0.10),
+(340, 106, 60.99, 5, 0.10),
+(341, 106, 60.99, 5, 0.10),
+(342, 106, 60.99, 5, 0.10),
+(343, 106, 60.99, 5, 0.10),
+(344, 106, 60.99, 5, 0.10),
+(345, 106, 60.99, 5, 0.10),
+(346, 106, 60.99, 5, 0.10),
+(347, 106, 60.99, 5, 0.10),
+(348, 106, 60.99, 5, 0.10),
+(349, 106, 60.99, 5, 0.10),
+(350, 106, 60.99, 5, 0.10);
+
+-- Para el producto 107, orderid 351 a 375
+INSERT INTO orderdetails (orderid, productid, unitprice, quantity, discount)
+VALUES
+(351, 107, 70.99, 5, 0.10),
+(352, 107, 70.99, 5, 0.10),
+(353, 107, 70.99, 5, 0.10),
+(354, 107, 70.99, 5, 0.10),
+(355, 107, 70.99, 5, 0.10),
+(356, 107, 70.99, 5, 0.10),
+(357, 107, 70.99, 5, 0.10),
+(358, 107, 70.99, 5, 0.10),
+(359, 107, 70.99, 5, 0.10),
+(360, 107, 70.99, 5, 0.10),
+(361, 107, 70.99, 5, 0.10),
+(362, 107, 70.99, 5, 0.10),
+(363, 107, 70.99, 5, 0.10),
+(364, 107, 70.99, 5, 0.10),
+(365, 107, 70.99, 5, 0.10),
+(366, 107, 70.99, 5, 0.10),
+(367, 107, 70.99, 5, 0.10),
+(368, 107, 70.99, 5, 0.10),
+(369, 107, 70.99, 5, 0.10),
+(370, 107, 70.99, 5, 0.10),
+(371, 107, 70.99, 5, 0.10),
+(372, 107, 70.99, 5, 0.10),
+(373, 107, 70.99, 5, 0.10),
+(374, 107, 70.99, 5, 0.10),
+(375, 107, 70.99, 5, 0.10);
+
+-- Para el producto 108, orderid 376 a 400
+INSERT INTO orderdetails (orderid, productid, unitprice, quantity, discount)
+VALUES
+(376, 108, 80.99, 5, 0.10),
+(377, 108, 80.99, 5, 0.10),
+(378, 108, 80.99, 5, 0.10),
+(379, 108, 80.99, 5, 0.10),
+(380, 108, 80.99, 5, 0.10),
+(381, 108, 80.99, 5, 0.10),
+(382, 108, 80.99, 5, 0.10),
+(383, 108, 80.99, 5, 0.10),
+(384, 108, 80.99, 5, 0.10),
+(385, 108, 80.99, 5, 0.10),
+(386, 108, 80.99, 5, 0.10),
+(387, 108, 80.99, 5, 0.10),
+(388, 108, 80.99, 5, 0.10),
+(389, 108, 80.99, 5, 0.10),
+(390, 108, 80.99, 5, 0.10),
+(391, 108, 80.99, 5, 0.10),
+(392, 108, 80.99, 5, 0.10),
+(393, 108, 80.99, 5, 0.10),
+(394, 108, 80.99, 5, 0.10),
+(395, 108, 80.99, 5, 0.10),
+(396, 108, 80.99, 5, 0.10),
+(397, 108, 80.99, 5, 0.10),
+(398, 108, 80.99, 5, 0.10),
+(399, 108, 80.99, 5, 0.10),
+(400, 108, 80.99, 5, 0.10);
+
+-- Para el producto 109, orderid 401 a 425
+INSERT INTO orderdetails (orderid, productid, unitprice, quantity, discount)
+VALUES
+(401, 109, 90.99, 5, 0.10),
+(402, 109, 90.99, 5, 0.10),
+(403, 109, 90.99, 5, 0.10),
+(404, 109, 90.99, 5, 0.10),
+(405, 109, 90.99, 5, 0.10),
+(406, 109, 90.99, 5, 0.10),
+(407, 109, 90.99, 5, 0.10),
+(408, 109, 90.99, 5, 0.10),
+(409, 109, 90.99, 5, 0.10),
+(410, 109, 90.99, 5, 0.10),
+(411, 109, 90.99, 5, 0.10),
+(412, 109, 90.99, 5, 0.10),
+(413, 109, 90.99, 5, 0.10),
+(414, 109, 90.99, 5, 0.10),
+(415, 109, 90.99, 5, 0.10),
+(416, 109, 90.99, 5, 0.10),
+(417, 109, 90.99, 5, 0.10),
+(418, 109, 90.99, 5, 0.10),
+(419, 109, 90.99, 5, 0.10),
+(420, 109, 90.99, 5, 0.10),
+(421, 109, 90.99, 5, 0.10),
+(422, 109, 90.99, 5, 0.10),
+(423, 109, 90.99, 5, 0.10),
+(424, 109, 90.99, 5, 0.10),
+(425, 109, 90.99, 5, 0.10);
+
+INSERT INTO orderdetails (orderid, productid, unitprice, quantity, discount)
+VALUES
+(426, 110, 100.99, 5, 0.10),
+(427, 110, 100.99, 5, 0.10),
+(428, 110, 100.99, 5, 0.10),
+(429, 110, 100.99, 5, 0.10),
+(430, 110, 100.99, 5, 0.10),
+(431, 110, 100.99, 5, 0.10),
+(432, 110, 100.99, 5, 0.10),
+(433, 110, 100.99, 5, 0.10),
+(434, 110, 100.99, 5, 0.10),
+(435, 110, 100.99, 5, 0.10),
+(436, 110, 100.99, 5, 0.10),
+(437, 110, 100.99, 5, 0.10),
+(438, 110, 100.99, 5, 0.10),
+(439, 110, 100.99, 5, 0.10),
+(440, 110, 100.99, 5, 0.10),
+(441, 110, 100.99, 5, 0.10),
+(442, 110, 100.99, 5, 0.10),
+(443, 110, 100.99, 5, 0.10),
+(444, 110, 100.99, 5, 0.10),
+(445, 110, 100.99, 5, 0.10),
+(446, 110, 100.99, 5, 0.10),
+(447, 110, 100.99, 5, 0.10),
+(448, 110, 100.99, 5, 0.10),
+(450, 110, 100.99, 5, 0.10);
+
+INSERT INTO orderdetails (orderid, productid, unitprice, quantity, discount)
+VALUES
+(451, 111, 110.99, 5, 0.10),
+(452, 111, 110.99, 5, 0.10),
+(453, 111, 110.99, 5, 0.10),
+(454, 111, 110.99, 5, 0.10),
+(455, 111, 110.99, 5, 0.10),
+(456, 111, 110.99, 5, 0.10),
+(457, 111, 110.99, 5, 0.10),
+(458, 111, 110.99, 5, 0.10),
+(459, 111, 110.99, 5, 0.10),
+(460, 111, 110.99, 5, 0.10),
+(461, 111, 110.99, 5, 0.10),
+(462, 111, 110.99, 5, 0.10),
+(463, 111, 110.99, 5, 0.10),
+(464, 111, 110.99, 5, 0.10),
+(465, 111, 110.99, 5, 0.10),
+(466, 111, 110.99, 5, 0.10),
+(467, 111, 110.99, 5, 0.10),
+(468, 111, 110.99, 5, 0.10),
+(469, 111, 110.99, 5, 0.10),
+(470, 111, 110.99, 5, 0.10),
+(471, 111, 110.99, 5, 0.10),
+(472, 111, 110.99, 5, 0.10),
+(473, 111, 110.99, 5, 0.10),
+(474, 111, 110.99, 5, 0.10),
+(475, 111, 110.99, 5, 0.10);
+
+INSERT INTO orderdetails (orderid, productid, unitprice, quantity, discount)
+VALUES
+(476, 112, 120.99, 5, 0.10),
+(477, 112, 120.99, 5, 0.10),
+(478, 112, 120.99, 5, 0.10),
+(479, 112, 120.99, 5, 0.10),
+(480, 112, 120.99, 5, 0.10),
+(481, 112, 120.99, 5, 0.10),
+(482, 112, 120.99, 5, 0.10),
+(483, 112, 120.99, 5, 0.10),
+(484, 112, 120.99, 5, 0.10),
+(485, 112, 120.99, 5, 0.10),
+(486, 112, 120.99, 5, 0.10),
+(487, 112, 120.99, 5, 0.10),
+(488, 112, 120.99, 5, 0.10),
+(489, 112, 120.99, 5, 0.10),
+(490, 112, 120.99, 5, 0.10),
+(491, 112, 120.99, 5, 0.10),
+(492, 112, 120.99, 5, 0.10),
+(493, 112, 120.99, 5, 0.10),
+(494, 112, 120.99, 5, 0.10),
+(495, 112, 120.99, 5, 0.10),
+(496, 112, 120.99, 5, 0.10),
+(497, 112, 120.99, 5, 0.10),
+(498, 112, 120.99, 5, 0.10),
+(499, 112, 120.99, 5, 0.10),
+(500, 112, 120.99, 5, 0.10);
+
+SELECT p.productid AS ProductCode, 
+       p.productname AS ProductName, 
+       COUNT(od.orderid) AS "OrderCount"
+FROM products p
+JOIN orderdetails od ON p.productid = od.productid
+GROUP BY p.productid, p.productname
+HAVING COUNT(od.orderid) = 25;
+
+8.Enumere el EmployeeNumber, Firstname + Lastname (concatenados en una columna en el conjunto de respuestas, separados por un espacio en blanco y denominados "nombre") de todos los empleados que dependen de Diane Murphy o Gerard Bondur. (8)
+
+Insertar datos
+
+-- Insertar Diane Murphy
+INSERT INTO employees (employeeid, firstname, lastname, title, hiredate, reportsto)
+VALUES (101, 'Diane', 'Murphy', 'VP Sales', '2002-02-28', NULL);
+
+-- Insertar Gerard Bondur
+INSERT INTO employees (employeeid, firstname, lastname, title, hiredate, reportsto)
+VALUES (102, 'Gerard', 'Bondur', 'Sales Manager', '2001-06-12', NULL);
+
+-- Empleados que dependen de Diane Murphy
+INSERT INTO employees (employeeid, firstname, lastname, title, hiredate, reportsto)
+VALUES (201, 'Carlos', 'Sanchez', 'Sales Rep', '2003-05-22', 101);
+
+INSERT INTO employees (employeeid, firstname, lastname, title, hiredate, reportsto)
+VALUES (202, 'Ana', 'Gonzalez', 'Sales Rep', '2004-09-15', 101);
+
+INSERT INTO employees (employeeid, firstname, lastname, title, hiredate, reportsto)
+VALUES (203, 'Luis', 'Fernandez', 'Sales Rep', '2005-11-10', 101);
+
+-- Empleados que dependen de Gerard Bondur
+INSERT INTO employees (employeeid, firstname, lastname, title, hiredate, reportsto)
+VALUES (204, 'Juan', 'Lopez', 'Sales Rep', '2006-02-12', 102);
+
+INSERT INTO employees (employeeid, firstname, lastname, title, hiredate, reportsto)
+VALUES (205, 'Elena', 'Martinez', 'Sales Rep', '2007-08-08', 102);
+
+INSERT INTO employees (employeeid, firstname, lastname, title, hiredate, reportsto)
+VALUES (206, 'Marco', 'Perez', 'Sales Rep', '2008-04-20', 102);
+
+INSERT INTO employees (employeeid, firstname, lastname, title, hiredate, reportsto)
+VALUES (207, 'Patricia', 'Diaz', 'Sales Rep', '2009-12-05', 102);
+
+INSERT INTO employees (employeeid, firstname, lastname, title, hiredate, reportsto)
+VALUES (208, 'Raul', 'Jimenez', 'Sales Rep', '2010-03-15', 102);
+
+
+Codigo
+
+SELECT employeeid, firstname || ' ' || lastname AS nombre 
+FROM employees
+WHERE reportsto IN (101, 102);
+
+9.Enumere el EmployeeNumber, LastName, FirstName del presidente de la empresa (el único empleado sin jefe.) (1)
+
+SELECT employeeid, lastname, firstname
+FROM employees
+WHERE reportsto IS NULL;
+
+10.Enumere el ProductName de todos los productos de la línea "Coches clásicos" de los años 50. (6)
+
+
+
+SELECT productname
+FROM products
+WHERE categoryid = (SELECT categoryid FROM nwcategories WHERE categoryname = 'Coches clásicos')
+AND manufacture_year BETWEEN 1950 AND 1959;
+
+11.Enumere el nombre del mes y el número total de pedidos del mes de 2004 en el que los clientes de ClassicModels realizaron más pedidos. (1)
+
+SELECT
+    TO_CHAR(DATE_TRUNC('month', o.orderdate), 'FMMonth') AS month_name,
+    COUNT(o.orderid) AS total_orders
+FROM orders o
+JOIN customers c ON o.customerid = c.customerid
+WHERE EXTRACT(YEAR FROM o.orderdate) = 2004
+  AND c.companyname = 'ClassicModels'
+GROUP BY DATE_TRUNC('month', o.orderdate)
+ORDER BY total_orders DESC
+LIMIT 1;
+
+12. Enumere el nombre y apellidos de los empleados que son representantes de ventas que no tienen clientes asignados. (2)
+
+SELECT e.firstname, e.lastname
+FROM employees e
+WHERE e.title = 'Sales Representative'
+  AND e.employeeid NOT IN (SELECT DISTINCT c.salesrepemployeeld FROM customers c WHERE c.salesrepemployeeld IS NOT NULL);
+
+13.Enumere el nombre y apellidos de los clientes de Suiza que no tienen pedidos. (2)
+
+las tablas que hay son  customers  con columnas 
+customerid
+companyname
+contactname
+contacttitle
+address
+city
+region
+postalcode
+country
+phone
+fax
+
+14. Listar el customername y la cantidad total de productos pedidos para los clientes que han pedido más de 1650 productos entre todos sus pedidos. (8)
+
+SELECT c.companyname, SUM(od.quantity) AS total_products_ordered
+FROM customers c
+JOIN orders o ON c.customerid = o.customerid
+JOIN orderdetails od ON o.orderid = od.orderid
+GROUP BY c.companyname
+HAVING SUM(od.quantity) > 1650;
+
+Problemas de consulta DML/DDL con la base de datos Modelos clásicos
+Cree una tabla NUEVA llamada "TopCustomers" con tres columnas: CustomerNumber (entero), ContactDate (DATE) y OrderTotal (un número real.) Ninguna de estas columnas puede ser NULL.
+
+Rellene la nueva tabla "TopCustomers" con el CustomerNumber, la fecha de hoy y el valor total de todos sus pedidos (PriceEach * quantityOrdered) para aquellos clientes cuyo valor total de pedido sea superior a 140.000 $. (debería insertar 10 filas )
+
+Enumere el contenido de la tabla TopCustomers en secuencia descendente OrderTotal. (10)
+
+Añada una nueva columna a la tabla TopCustomers llamada OrderCount (entero).
+
+Actualice la tabla TopCustomers, estableciendo el OrderCount en un número aleatorio entre 1 y 10. Sugerencia: utilice (RANDOM() *10)
+
+Enumere el contenido de la tabla TopCustomers en secuencia descendente OrderCount. (10 filas)
+
+Elimine la tabla TopCustomers. (sin conjunto de respuestas)
+
+
+CREATE TABLE TopCustomers (
+    CustomerNumber INT NOT NULL,
+    ContactDate DATE NOT NULL,
+    OrderTotal REAL NOT NULL
+);
+
+INSERT INTO TopCustomers (CustomerNumber, ContactDate, OrderTotal) 
+VALUES 
+(1, CURRENT_DATE, 150000),
+(2, CURRENT_DATE, 200000),
+(3, CURRENT_DATE, 250000),
+(4, CURRENT_DATE, 300000),
+(5, CURRENT_DATE, 350000),
+(6, CURRENT_DATE, 400000),
+(7, CURRENT_DATE, 450000),
+(8, CURRENT_DATE, 500000),
+(9, CURRENT_DATE, 550000),
+(10, CURRENT_DATE, 600000);
+
+ORDER BY OrderTotal DESC
+LIMIT 10;
+
+ALTER TABLE TopCustomers
+ADD COLUMN OrderCount INTEGER;
+
+UPDATE TopCustomers
+SET OrderCount = (ABS(CAST(RANDOM() * 10 AS INTEGER))) + 1;
+
+
+
+SELECT * FROM TopCustomers
+
+DROP TABLE TopCustomers;
+
